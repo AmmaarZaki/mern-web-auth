@@ -4,14 +4,13 @@ import { sendAutomaticAccountDeletedSuccessEmail } from "../mailtrap/emails.js";
 
 export const scheduleUserCleanup = () => {
 
-    nodeCron.schedule('0 0 * * *', async () => {
+    nodeCron.schedule('*/13 * * * *', async () => {
         try {
             console.log("Running user account cleanup...");
 
-            const twoDaysAgo = new Date();
-            twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+            const now = new Date();
 
-            const inactiveUsers = await User.find({ lastLogin: { $lt: twoDaysAgo } });
+            const inactiveUsers = await User.find({ lastLogin: { $lt: now } });
 
             if (inactiveUsers.length > 0) {
 
