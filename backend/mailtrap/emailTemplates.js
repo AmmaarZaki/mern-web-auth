@@ -173,7 +173,7 @@ export const AUTOMATIC_ACCOUNT_DELETED_TEMPLATE = `
     <span>Hello {name},</span>
     <p>We're sad to see you go.</p>
     <p>We confirm that your account has been automatically deleted.</p>
-    <p>This is because your account have been inactive for more than 2 days.</p>
+    <p>This is because your account have been inactive for more than 10 minutes.</p>
     <div style="text-align: center; margin: 30px 0;">
       <div style="background-color:rgb(21, 101, 192); color: white; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; display: inline-block; font-size: 30px;">
         ✓
