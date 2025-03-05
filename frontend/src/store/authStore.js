@@ -14,7 +14,7 @@ export const useAuthStore = create((set) => ({
     isCheckingAuthentication: true,
     message: null,
 
-    userSignup: async (name, email, password) => {
+    userSignup: async (name, email, password, captchaToken) => {
 
         set({
             isLoading: true,
@@ -22,7 +22,7 @@ export const useAuthStore = create((set) => ({
         });
 
         try {
-            const response = await axios.post(`${API_URL}/userSignup`, { name, email, password });
+            const response = await axios.post(`${API_URL}/userSignup`, { name, email, password, captchaToken });
             set({
                 user: response.data.user,
                 isAuthenticated: true,
@@ -136,7 +136,7 @@ export const useAuthStore = create((set) => ({
         }
     },
 
-    userForgotPassword: async (email) => {
+    userForgotPassword: async (email, captchaToken) => {
 
         set({
             isLoading: true,
@@ -145,7 +145,7 @@ export const useAuthStore = create((set) => ({
         });
 
         try {
-            const response = await axios.post(`${API_URL}/userForgotPassword`, { email });
+            const response = await axios.post(`${API_URL}/userForgotPassword`, { email, captchaToken });
             set({
                 message: response.data.message,
                 isLoading: false
@@ -192,7 +192,7 @@ export const useAuthStore = create((set) => ({
         });
 
         try {
-            const response = await axios.post(`${API_URL}/userDeleteAccount`, { password });
+            await axios.post(`${API_URL}/userDeleteAccount`, { password });
             set({
                 user: null,
                 isAuthenticated: false,

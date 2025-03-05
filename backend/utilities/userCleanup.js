@@ -8,9 +8,10 @@ export const scheduleUserCleanup = () => {
         try {
             console.log("Running user account cleanup...");
 
-            const now = new Date();
+            const accountExpireTime = new Date();
+            accountExpireTime.setMinutes(accountExpireTime.getMinutes() - 13);
 
-            const inactiveUsers = await User.find({ lastLogin: { $lt: now } });
+            const inactiveUsers = await User.find({ lastLogin: { $lt: accountExpireTime } });
 
             if (inactiveUsers.length > 0) {
 
