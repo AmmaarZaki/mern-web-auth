@@ -32,6 +32,7 @@ const UserHomePage = () => {
             toast.error("Account deletion failed. Please check your password.");
 
         } finally {
+
             setDeleteLoading(false);
             setIsDialogOpen(false);
         }
@@ -89,7 +90,7 @@ const UserHomePage = () => {
                 transition={{ delay: 0.6 }}
                 className='mt-4'
             >
-                <Button onClick={handleUserLogout} type="submit" isLoading={isLoading}>
+                <Button onClick={handleUserLogout} type="submit">
                     Log Out
                 </Button>
             </motion.div>

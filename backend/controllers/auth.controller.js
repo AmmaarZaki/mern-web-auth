@@ -12,11 +12,29 @@ import {
     sendAccountDeletedSuccessEmail
 } from "../mailtrap/emails.js";
 
+const secretKey = process.env.CAPTCHA_SECRET_KEY;
+
 export const userSignup = async (req, res) => {
 
-    const { email, password, name } = req.body;
+    const { email, password, name, captchaToken } = req.body;
+
+    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaToken}`;
 
     try {
+        const response = await fetch(verificationUrl, {
+            method: 'POST'
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Captcha failed, not a real user."
+                });
+        }
+
         if (!email || !password || !name) {
             throw new Error("All fields are required for signup");
         }
@@ -162,9 +180,25 @@ export const userLogout = async (req, res) => {
 
 export const userForgotPassword = async (req, res) => {
 
-    const { email } = req.body;
+    const { email, captchaToken } = req.body;
+
+    const verificationUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${captchaToken}`;
 
     try {
+
+        const response = await fetch(verificationUrl, {
+            method: 'POST'
+        });
+        const data = await response.json();
+
+        if (!data.success) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    message: "Captcha failed, not a real user."
+                });
+        }
 
         const user = await User.findOne({ email });
 

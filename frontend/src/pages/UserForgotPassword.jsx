@@ -3,25 +3,39 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useAuthStore } from '../store/authStore';
 import Input from '../components/Input';
-import { ArrowLeft, Loader, Mail } from 'lucide-react';
+import { ArrowLeft, Mail } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "react-hot-toast";
 
 const UserForgotPassword = () => {
 
     const [email, setEmail] = useState("");
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [captchaStatus, setCaptchaStatus] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState('');
 
     const { isLoading, userForgotPassword, error } = useAuthStore();
+
+    const onSuccessCaptcha = async (token) => {
+        setCaptchaToken(token);
+        setCaptchaStatus(true);
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            await userForgotPassword(email);
-            setIsSubmitted(true);
-        } catch (error) {
-            console.log("Error:", error);
+        if (captchaStatus) {
+            try {
+                await userForgotPassword(email, captchaToken);
+                setIsSubmitted(true);
+            } catch (error) {
+                console.log("Error:", error);
+            }
+
+        } else {
+            toast.error("Verify that you are not a robot!");
         }
     }
 
@@ -51,6 +65,14 @@ const UserForgotPassword = () => {
                             onChange={(e) => setEmail(e.target.value)}
                             required
                         />
+
+                        <div className="flex justify-center items-center mb-4">
+                            <ReCAPTCHA
+                                sitekey="6LcQReoqAAAAAOO3kfgs37-Xga30L_bwZxgqAySz"
+                                onChange={onSuccessCaptcha}
+                            />
+                        </div>
+
                         <Button type="submit" isLoading={isLoading}>
                             Send Reset Link
                         </Button>

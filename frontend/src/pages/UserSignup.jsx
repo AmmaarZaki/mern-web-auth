@@ -1,30 +1,44 @@
 import { motion } from "framer-motion";
-import { User, Mail, Lock, Loader } from "lucide-react";
+import { User, Mail, Lock } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import Button from "../components/Button";
 import PasswordStrengthMeter from "../components/PasswordStrengthMeter";
 import Input from "../components/Input";
+import ReCAPTCHA from "react-google-recaptcha";
+import { toast } from "react-hot-toast";
 
 const UserSignupPage = () => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [captchaStatus, setCaptchaStatus] = useState(false);
+    const [captchaToken, setCaptchaToken] = useState('');
 
     const navigate = useNavigate();
     const { userSignup, error, isLoading } = useAuthStore();
 
+    const onSuccessCaptcha = async (token) => {
+        setCaptchaToken(token);
+        setCaptchaStatus(true);
+    }
+
     const handleUserSignup = async (e) => {
         e.preventDefault();
 
-        try {
-            await userSignup(name, email, password);
-            navigate('/userEmailVerification');
+        if (captchaStatus) {
+            try {
+                await userSignup(name, email, password, captchaToken);
+                navigate('/userEmailVerification');
 
-        } catch (error) {
-            console.error(error);
+            } catch (error) {
+                console.error(error);
+            }
+
+        } else {
+            toast.error("Verify that you are not a robot!");
         }
     }
 
@@ -64,6 +78,13 @@ const UserSignupPage = () => {
                     </p>}
 
                     <PasswordStrengthMeter password={password} />
+
+                    <div className="flex justify-center items-center mb-4">
+                        <ReCAPTCHA
+                            sitekey="6LcQReoqAAAAAOO3kfgs37-Xga30L_bwZxgqAySz"
+                            onChange={onSuccessCaptcha}
+                        />
+                    </div>
 
                     <Button type="submit" isLoading={isLoading}>
                         Sign Up
