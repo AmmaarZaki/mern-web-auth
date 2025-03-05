@@ -23,7 +23,7 @@ export const scheduleUserCleanup = () => {
                     console.log(`User Deleted: ${user.name}`);
                 }
             } else {
-                console.log("No inactive users found");
+                console.log("No users to be deleted.");
             }
 
         } catch (error) {

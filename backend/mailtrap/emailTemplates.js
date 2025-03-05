@@ -44,6 +44,7 @@ export const WELCOME_EMAIL_TEMPLATE = `
     <p>Hello,</p>
     <span>Thank you for signing up and verifying your email: {email}!</span>
     <p>We hope you have a good day {name}</p>
+    <p>Keep in mind that we will delete your account after 13 minutes of inactivity.</p>
     <p>If you didn't create an account with us, please ignore this email.</p>
     <p>Best regards,<br>Web Auth Team</p>
   </div>
